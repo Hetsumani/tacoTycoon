@@ -4,3 +4,18 @@
   padding: 2rem;
   text-align: center;
 }
+
+.upgrade-list {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.upgrade {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
