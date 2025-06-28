@@ -1,0 +1,2 @@
+# tacoTycoon
+Idle Clicker didáctico
