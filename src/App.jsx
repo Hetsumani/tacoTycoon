@@ -1,3 +1,5 @@
+// Solo necesitamos modificar dos archivos: App.jsx (donde vive la lógica) y Header.jsx (donde se muestra la información).
+// El componente ClickerButton.jsx no necesita cambios, lo que demuestra la ventaja de nuestra arquitectura actual.
 import React, { useState } from 'react'; // React 18+ permite JSX sin importar, pero seguimos importando useState.
 import Header from './components/Header';
 import ClickerButton from './components/ClickerButton';
@@ -12,9 +14,16 @@ export default function App() {
   /* ---------------------------------------------------------------------- */
   /*  Estado                                                                */
   /* ---------------------------------------------------------------------- */
-
-  // El estado se mantiene en el componente padre (App). Esto se conoce como "State Lifting".
+  
   const [tacosVendidos, setTacosVendidos] = useState(0); // Estado inicial: 0 tacos.
+  // Añadimos un nuevo estado para el dinero
+  const [dinero, setDinero] = useState(0);
+
+  /* ---------------------------------------------------------------------- */
+  /*  Lógica del juego                                                      */
+  /* ---------------------------------------------------------------------- */
+
+  const PRECIO_TACO_ASADA = 5;
 
   /* ---------------------------------------------------------------------- */
   /*  Manejadores de eventos                                                */
@@ -24,6 +33,7 @@ export default function App() {
   const handleVenderTaco = () => {
     // Variante segura basada en el valor previo:
     setTacosVendidos(prevTacos => prevTacos + 1);
+    setDinero(dinero + PRECIO_TACO_ASADA)
   };
 
   /* ---------------------------------------------------------------------- */
@@ -32,11 +42,9 @@ export default function App() {
 
   return (
     <div className="App">
-      {/* Usamos el componente Header y le pasamos 'tacosVendidos' como una prop. */}
-      <Header tacosVendidos={tacosVendidos} />
-      <main>
-        {/* Usamos el componente ClickerButton. */}
-        {/* Le pasamos la función 'handleVenderTaco' como una prop llamada 'onVenderTaco'. */}
+      {/* Pasamos el nuevo estado 'dinero' al Header como prop. */}
+      <Header tacosVendidos={tacosVendidos} dinero={dinero}/>
+      <main>        
         <ClickerButton onVenderTaco={handleVenderTaco} guisado='Asada' />
       </main>
     </div>
