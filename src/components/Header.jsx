@@ -9,14 +9,15 @@ import React from "react";
  * @param {number} props.gananciaPorClick - La ganancia actual por cada clic.
  */
 
-function Header({ tacosVendidos, dinero, gananciaPorClick }) { // <-- Añadimos 'dinero' a las props
+function Header({ tacosVendidos, dinero, gananciaPorClick, tps }) {
   return (
     <header className="App-header">
       <h1>Taco Tycoon</h1>
-      {/* Muestra el valor que recibe a través de props */}
-      <h2>Tacos Vendidos: {tacosVendidos}</h2>
-      <h2>Dinero: {dinero}</h2> {/* <-- Nueva línea para mostrar el dinero */}
+      <h2>Tacos Vendidos: {tacosVendidos.toFixed(0)}</h2>
+      <h2>Dinero: {dinero.toFixed(2)}</h2>
       <h3>Ganancia por Taco: ${gananciaPorClick.toFixed(2)}</h3>
+      {/* Nuevo contador de TPS */}
+      <h3>Tacos por Seg (TPS): {tps.toFixed(1)}</h3>
     </header>
   );
 }
