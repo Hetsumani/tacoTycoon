@@ -11,11 +11,12 @@ import Upgrade from "./upgrade";
  * @param {number} props.dinero - El dinero actual del jugador.
  */
 
-function UpgradeList({ upgrades, onComprarMejora, dinero }) {
+function UpgradeList({ upgrades, onComprarMejora, dinero, titulo }) {
   return (
     <div className="upgrade-list">
-      <h3>Mejoras de Asada</h3>
-      {upgrades.map((upgrade) => (        
+      {/*El título ahora es dinámico*/}
+      <h3>{titulo}</h3>
+      {upgrades.map((upgrade) => (
         <Upgrade
           key={upgrade.id}
           nombre={upgrade.nombre}

@@ -1,158 +1,219 @@
-// Aquí es donde se unen todas las piezas: el nuevo estado,
-// el cálculo de TPS y el bucle del juego con useEffect.
-import React, { useState, useMemo, useEffect } from 'react'; // ETAPA 6: Se confirma la importación de useEffect
+// App.jsx
+
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import ClickerButton from './components/ClickerButton';
 import UpgradeList from './components/upgradeList';
-import AyudanteList from './components/AyudanteList'; // ETAPA 6: Se importa el nuevo componente para la lista de ayudantes.
+import AyudanteList from './components/AyudanteList';
 import './App.css';
 
-/* -------------------------------------------------------------------------- */
-/* Datos Iniciales                                                           */
-/* -------------------------------------------------------------------------- */
+// --- DATOS INICIALES ---
 
-const initialAsadaUpgrades = [
-  { id: 'asada-1', nombre: 'Cebolla', nivel: 0, costoBase: 10, costo: 10, efecto: 0.1 },
-  { id: 'asada-2', nombre: 'Cilantro', nivel: 0, costoBase: 20, costo: 20, efecto: 0.15 },
-  { id: 'asada-3', nombre: 'Salsa', nivel: 0, costoBase: 50, costo: 50, efecto: 0.2 },
-  { id: 'asada-4', nombre: 'Guacamole', nivel: 0, costoBase: 100, costo: 100, efecto: 0.25 },
-  { id: 'asada-5', nombre: 'Doble Tortilla', nivel: 0, costoBase: 200, costo: 200, efecto: 0.3 },
-];
-
-// ETAPA 6: Se definen los datos iniciales para los ayudantes.
-// Cada uno tiene su costo, nivel y una descripción de su efecto.
-const initialAyudantes = [
-  { id: 'ayudante-1', nombre: 'Don Chema', nivel: 0, costoBase: 1500, costo: 1500, descripcion: 'Genera 1 taco por segundo por nivel.' },
-  { id: 'ayudante-2', nombre: 'Doña Concha', nivel: 0, costoBase: 10000, costo: 100000, descripcion: 'Duplica el TPS total por cada nivel.' }
-];
-
-const PRECIO_BASE_TACO_ASADA = 5;
-
-/* -------------------------------------------------------------------------- */
-/* Componente                                                                */
-/* -------------------------------------------------------------------------- */
+// ETAPA 7: Se reestructura toda la data inicial en un solo objeto `initialGameState`.
+// Esto nos permite manejar múltiples tipos de tacos de forma escalable.
+// Cada clave del objeto (ej. 'asada') representa un tipo de taco.
+const initialGameState = {
+  asada: {
+    id: 'asada',
+    nombre: 'Asada',
+    precioBase: 5,
+    tacosVendidos: 0,
+    // ETAPA 7 EXTRA: Se añade la propiedad `isUnlocked` para controlar la visibilidad y funcionalidad.
+    isUnlocked: true, // Asada empieza desbloqueado.
+    unlockCost: 0,
+    upgrades: [
+      { id: 'asada-1', nombre: 'Cebolla', nivel: 0, costoBase: 250, costo: 250, efecto: 0.1 },
+      { id: 'asada-2', nombre: 'Cilantro', nivel: 0, costoBase: 2000, costo: 2000, efecto: 0.15 },
+      { id: 'asada-3', nombre: 'Salsa', nivel: 0, costoBase: 5000, costo: 5000, efecto: 0.2 },
+      { id: 'asada-4', nombre: 'Guacamole', nivel: 0, costoBase: 10000, costo: 10000, efecto: 0.25 },
+      { id: 'asada-5', nombre: 'Doble Tortilla', nivel: 0, costoBase: 50000, costo: 50000, efecto: 0.3 },
+    ],
+    ayudantes: [
+      { id: 'asada-ayudante-1', nombre: 'Don Chema', nivel: 0, costoBase: 1500, costo: 1500, descripcion: 'Genera 1 Taco por Segundo por nivel.' },
+      { id: 'asada-ayudante-2', nombre: 'Doña Concha', nivel: 0, costoBase: 10000, costo: 10000, descripcion: 'Duplica el TPS total por cada nivel.' },
+    ]
+  },
+  // ETAPA 7: Se añade el objeto completo para el nuevo tipo de taco: Adobada.
+  adobada: {
+    id: 'adobada',
+    nombre: 'Adobada',
+    precioBase: 7,
+    tacosVendidos: 0,
+    // ETAPA 7 EXTRA: Adobada empieza bloqueado y con un costo de desbloqueo.
+    isUnlocked: false,
+    unlockCost: 100000,
+    upgrades: [
+      { id: 'adobada-1', nombre: 'Piña', nivel: 0, costoBase: 30, costo: 30, efecto: 0.2 },
+      { id: 'adobada-2', nombre: 'Cilantro', nivel: 0, costoBase: 40, costo: 40, efecto: 0.2 },
+      { id: 'adobada-3', nombre: 'Cebolla', nivel: 0, costoBase: 40, costo: 40, efecto: 0.2 },
+      { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 80, costo: 80, efecto: 0.3 },
+      { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 150, costo: 150, efecto: 0.4 },
+    ],
+    ayudantes: []
+  }
+};
 
 export default function App() {
-  /* ---------------------------------------------------------------------- */
-  /* Estado                                                                  */
-  /* ---------------------------------------------------------------------- */
-  const [tacosVendidos, setTacosVendidos] = useState(0);
+  // --- ESTADO ---
   const [dinero, setDinero] = useState(0);
-  const [asadaUpgrades, setAsadaUpgrades] = useState(initialAsadaUpgrades);
-  // ETAPA 6: Se añade un nuevo estado para manejar la lista de ayudantes.
-  const [ayudantes, setAyudantes] = useState(initialAyudantes);
+  // ETAPA 7: Se unifican los estados relacionados con los tacos en un solo objeto `gameState`.
+  const [gameState, setGameState] = useState(initialGameState);
 
-  /* ---------------------------------------------------------------------- */
-  /* Lógica del juego (Cálculos Derivados)                                   */
-  /* ---------------------------------------------------------------------- */
-  const gananciaPorClick = useMemo(() => {
+  // --- CÁLCULOS DERIVADOS ---
+
+  // ETAPA 7: `gananciaPorClick` se convierte en una función que toma el ID del taco.
+  // Esto es necesario porque ahora cada tipo de taco tiene su propia ganancia.
+  const calculateGananciaPorClick = (tacoId) => {
+    const taco = gameState[tacoId];
+    if (!taco) return 0;
     const multiplicadorBase = 1;
-    const bonusPorMejoras = asadaUpgrades.reduce((total, mejora) => {
-      return total + (mejora.nivel * mejora.efecto);
-    }, 0);
-    return PRECIO_BASE_TACO_ASADA * (multiplicadorBase + bonusPorMejoras);
-  }, [asadaUpgrades]);
+    const bonusPorMejoras = taco.upgrades.reduce((total, mejora) => total + (mejora.nivel * mejora.efecto), 0);
+    return taco.precioBase * (multiplicadorBase + bonusPorMejoras);
+  };
+  
+  // ETAPA 7: El TPS total ahora lee desde la nueva estructura de estado anidada.
+  const totalTps = useMemo(() => {
+    const tpsAsada = (() => {
+      // ETAPA 7 EXTRA: Se añade una comprobación para no calcular el TPS de un taco bloqueado.
+      if (!gameState.asada.isUnlocked) return 0;
+      const ayudantes = gameState.asada.ayudantes;
+      const tpsBase = (ayudantes.find(a => a.id === 'asada-ayudante-1')?.nivel || 0) * 1;
+      const multiplicadorNivel = ayudantes.find(a => a.id === 'asada-ayudante-2')?.nivel || 0;
+      return tpsBase * Math.pow(2, multiplicadorNivel);
+    })();
+    return tpsAsada;
+  }, [gameState]);
 
-  // ETAPA 6: Se añade el cálculo para los Tacos Por Segundo (TPS).
-  // Se usa `useMemo` para que este valor solo se recalcule cuando el estado de `ayudantes` cambie.
-  const tps = useMemo(() => {
-    // Se calcula el TPS base que aporta Don Chema (1 por nivel).
-    const tpsBase = (ayudantes.find(a => a.id === 'ayudante-1')?.nivel || 0) * 1;
-    // Se obtiene el nivel de Doña Concha para saber cuántas veces duplicar el TPS.
-    const multiplicadorNivel = ayudantes.find(a => a.id === 'ayudante-2')?.nivel || 0;
-    // La fórmula aplica el multiplicador: tpsBase * (2^nivelDeDoñaConcha)
-    return tpsBase * Math.pow(2, multiplicadorNivel);
-  }, [ayudantes]);
+  // ETAPA 7: Se añade un cálculo para el total de tacos vendidos de todos los tipos.
+  const totalTacos = useMemo(() => {
+    return Object.values(gameState).reduce((total, taco) => total + taco.tacosVendidos, 0);
+  }, [gameState]);
 
-  /* ---------------------------------------------------------------------- */
-  /* Efectos Secundarios (Bucle del Juego)                                   */
-  /* ---------------------------------------------------------------------- */
 
-  // ETAPA 6: Este es el Hook `useEffect` que maneja la producción automática.
-  // Es el corazón del juego pasivo.
+  // --- BUCLE DEL JUEGO ---
   useEffect(() => {
-    // Si no hay producción por segundo (tps es 0), no se hace nada. Es una optimización.
-    if (tps === 0) return;
-
-    // `setInterval` es una función de JavaScript que ejecuta un código cada X milisegundos.
-    // Aquí, se ejecutará cada 100ms (10 veces por segundo) para una animación fluida.
-    const intervalID = setInterval(() => {
-      // Se actualiza el estado usando la forma de función (callback).
-      // Esto garantiza que siempre se use el valor más reciente del estado, evitando errores.
-      setTacosVendidos(prevTacos => prevTacos + (tps / 10));
-      setDinero(prevDinero => prevDinero + (tps * gananciaPorClick / 10));
+    if (totalTps === 0) return;
+    const intervalId = setInterval(() => {
+      const gananciaPorSegundo = totalTps * calculateGananciaPorClick('asada');
+      // ETAPA 7: La actualización de estado ahora debe modificar el objeto anidado correctamente.
+      setGameState(prev => ({
+        ...prev,
+        asada: {
+          ...prev.asada,
+          tacosVendidos: prev.asada.tacosVendidos + (totalTps / 10)
+        }
+      }));
+      setDinero(prevDinero => prevDinero + (gananciaPorSegundo / 10));
     }, 100);
+    return () => clearInterval(intervalId);
+    // ETAPA 7: `gameState` se convierte en una dependencia para que el bucle se actualice si algo cambia.
+  }, [totalTps, gameState]);
 
-    // La función de limpieza: `useEffect` devuelve esta función.
-    // React la ejecuta cuando el componente va a ser "desmontado" o antes de que el efecto se repita.
-    return () => {
-      clearInterval(intervalID); // Limpia el intervalo para evitar que siga corriendo y cause fugas de memoria.
-    };
-    // El arreglo de dependencias: Le dice a React que este efecto debe volver a ejecutarse
-    // solo si los valores de `tps` o `gananciaPorClick` cambian.
-  }, [tps, gananciaPorClick]);
-
-  /* ---------------------------------------------------------------------- */
-  /* Manejadores de eventos                                                  */
-  /* ---------------------------------------------------------------------- */
-  const handleVenderTaco = () => {
-    setTacosVendidos(prevTacos => prevTacos + 1);
-    setDinero(prevDinero => prevDinero + gananciaPorClick);
+  // --- MANEJADORES DE EVENTOS ---
+  
+  // ETAPA 7: El manejador ahora recibe `tacoId` para saber qué taco incrementar.
+  const handleVenderTaco = (tacoId) => {
+    const ganancia = calculateGananciaPorClick(tacoId);
+    setDinero(prevDinero => prevDinero + ganancia);
+    // ETAPA 7: La actualización del estado es más compleja para modificar una propiedad anidada de forma inmutable.
+    setGameState(prev => ({
+      ...prev,
+      [tacoId]: {
+        ...prev[tacoId],
+        tacosVendidos: prev[tacoId].tacosVendidos + 1
+      }
+    }));
   };
 
-  // ETAPA 6: Esta función se generalizó para manejar la compra tanto de mejoras
-  // como de ayudantes, recibiendo como parámetros el estado y su función de actualización.
-  // Esto evita tener dos funciones de compra casi idénticas.
-  const handleComprar = (id, items, setItems) => {
-    const item = items.find(i => i.id === id);
+  // ETAPA 7: El manejador de compra ahora es más genérico, aceptando `tacoId` y `itemType` ('upgrades' o 'ayudantes').
+  const handleComprar = (tacoId, itemId, itemType) => {
+    const taco = gameState[tacoId];
+    const items = taco[itemType];
+    const item = items.find(i => i.id === itemId);
+
     if (dinero >= item.costo) {
       setDinero(dinero - item.costo);
-      setItems(prevItems =>
-        prevItems.map(i => {
-          if (i.id === id) {
-            const nuevoNivel = i.nivel + 1;
-            return {
-              ...i,
-              nivel: nuevoNivel,
-              costo: Math.floor(i.costoBase * Math.pow(1.15, nuevoNivel)),
-            };
-          }
-          return i;
-        })
-      );
+      const nuevosItems = items.map(i => {
+        if (i.id === itemId) {
+          const nuevoNivel = i.nivel + 1;
+          return { ...i, nivel: nuevoNivel, costo: Math.floor(i.costoBase * Math.pow(1.15, nuevoNivel)) };
+        }
+        return i;
+      });
+      // ETAPA 7: La actualización del estado busca el taco correcto y el tipo de item correcto para actualizar.
+      setGameState(prev => ({ ...prev, [tacoId]: { ...prev[tacoId], [itemType]: nuevosItems } }));
     }
   };
 
-  /* ---------------------------------------------------------------------- */
-  /* Render (JSX)                                                            */
-  /* ---------------------------------------------------------------------- */
+  // ETAPA 7 EXTRA: Se añade una nueva función para manejar la lógica de desbloqueo.
+  const handleUnlockTaco = (tacoId) => {
+    const taco = gameState[tacoId];
+    if (dinero >= taco.unlockCost) {
+        setDinero(prevDinero => prevDinero - taco.unlockCost);
+        // Actualiza el estado para poner la propiedad `isUnlocked` del taco en `true`.
+        setGameState(prev => ({
+            ...prev,
+            [tacoId]: { ...prev[tacoId], isUnlocked: true }
+        }));
+    }
+  };
+
+
+  // --- RENDERIZADO ---
   return (
     <div className="App">
       <Header
-        tacosVendidos={tacosVendidos}
+        tacosVendidos={totalTacos}
         dinero={dinero}
-        gananciaPorClick={gananciaPorClick}
-        // ETAPA 6: Se pasa el valor de tps al Header para que lo muestre.
-        tps={tps}
+        tps={totalTps}
       />
       <main className='game-container'>
-        <div className="clicker-section">
-          <ClickerButton onVenderTaco={handleVenderTaco} guisado="Asada" />
-        </div>
-        <div className="upgrades-section">
-          <UpgradeList
-            upgrades={asadaUpgrades}
-            onComprarMejora={(id) => handleComprar(id, asadaUpgrades, setAsadaUpgrades)}
-            dinero={dinero}
-          />
-          {/* ETAPA 6: Se renderiza el nuevo componente de lista de ayudantes. */}
-          {/* Se le pasan los datos de los ayudantes, la función de compra y el dinero actual. */}
-          <AyudanteList
-            ayudantes={ayudantes}
-            onComprarAyudante={(id) => handleComprar(id, ayudantes, setAyudantes)}
-            dinero={dinero}
-          />
-        </div>
+        {/* ETAPA 7: Se mapea el objeto `gameState` para renderizar una sección por cada tipo de taco.
+            Esto hace que la UI sea dinámica y se adapte a los datos. */}
+        {Object.values(gameState).map(taco => (
+          <div key={taco.id} className="taco-type-section">
+            {/* ETAPA 7 EXTRA: Se añade renderizado condicional. Muestra una cosa si el taco
+                está desbloqueado, y otra (el botón de desbloqueo) si no lo está. */}
+            {taco.isUnlocked ? (
+              // Si está desbloqueado: renderiza la interfaz normal del juego.
+              <>
+                {/*Desplegamos el guisado del taco y su ganancia por cada uno}*/}
+                <h2>{taco.nombre} ${calculateGananciaPorClick(taco.id)}</h2>
+                <ClickerButton
+                  onVenderTaco={() => handleVenderTaco(taco.id)}
+                  guisado={taco.nombre}
+                />
+                <UpgradeList
+                  titulo={`Mejoras de ${taco.nombre}`}
+                  upgrades={taco.upgrades}
+                  onComprarMejora={(itemId) => handleComprar(taco.id, itemId, 'upgrades')}
+                  dinero={dinero}
+                />
+                {taco.ayudantes.length > 0 && (
+                  <AyudanteList
+                    titulo={`Ayudantes de ${taco.nombre}`}
+                    ayudantes={taco.ayudantes}
+                    onComprarAyudante={(itemId) => handleComprar(taco.id, itemId, 'ayudantes')}
+                    dinero={dinero}
+                  />
+                )}
+              </>
+            ) : (
+              // Si NO está desbloqueado: renderiza la sección de desbloqueo.
+              <div className="unlock-section">
+                <h2>Desbloquear Taquería de {taco.nombre}</h2>
+                <p>Costo: ${taco.unlockCost.toLocaleString()}</p>
+                <button
+                  className="unlock-button"
+                  onClick={() => handleUnlockTaco(taco.id)}
+                  disabled={dinero < taco.unlockCost}
+                >
+                  Desbloquear
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
       </main>
     </div>
   );

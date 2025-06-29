@@ -5,10 +5,10 @@ import Ayudante from "./Ayudante";
  * Renderiza una lista de componentes Ayudante.
  */
 
-function AyudanteList({ayudantes, onComprarAyudante, dinero}){
+function AyudanteList({ayudantes, onComprarAyudante, dinero, titulo}){
     return(
         <div className="upgrade-list"> {/*Reutilizamos la clase CSS*/}
-            <h3>Ayudantes de Taquería</h3>
+            <h3>{titulo}</h3>
             {ayudantes.map((ayudante) => (
                 <Ayudante 
                     key={ayudante.id}

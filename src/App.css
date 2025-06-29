@@ -36,3 +36,47 @@
   flex-direction: column;
   gap: 20px;
 }
+
+.game-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  padding: 20px;
+}
+
+.taco-type-section {
+  flex-basis: 48%;
+  border: 2px solid #555;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #333;
+}
+
+.unlock-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #ccc;
+}
+
+.unlock-button {
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.unlock-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.unlock-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
