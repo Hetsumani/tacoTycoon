@@ -22,11 +22,11 @@ const initialGameState = {
     isUnlocked: true, // Asada empieza desbloqueado.
     unlockCost: 0,
     upgrades: [
-      { id: 'asada-1', nombre: 'Cebolla', nivel: 0, costoBase: 250, costo: 250, efecto: 0.1 },
-      { id: 'asada-2', nombre: 'Cilantro', nivel: 0, costoBase: 2000, costo: 2000, efecto: 0.15 },
-      { id: 'asada-3', nombre: 'Salsa', nivel: 0, costoBase: 5000, costo: 5000, efecto: 0.2 },
-      { id: 'asada-4', nombre: 'Guacamole', nivel: 0, costoBase: 10000, costo: 10000, efecto: 0.25 },
-      { id: 'asada-5', nombre: 'Doble Tortilla', nivel: 0, costoBase: 50000, costo: 50000, efecto: 0.3 },
+      { id: 'asada-1', nombre: 'Cebolla', nivel: 0, costoBase: 250, costo: 250, efecto: 0.15 },
+      { id: 'asada-2', nombre: 'Cilantro', nivel: 0, costoBase: 2000, costo: 2000, efecto: 0.25 },
+      { id: 'asada-3', nombre: 'Salsa', nivel: 0, costoBase: 5000, costo: 5000, efecto: 0.40 },
+      { id: 'asada-4', nombre: 'Guacamole', nivel: 0, costoBase: 10000, costo: 10000, efecto: 0.55 },
+      { id: 'asada-5', nombre: 'Doble Tortilla', nivel: 0, costoBase: 50000, costo: 50000, efecto: 0.70 },
     ],
     ayudantes: [
       { id: 'asada-ayudante-1', nombre: 'Don Chema', nivel: 0, costoBase: 1500, costo: 1500, descripcion: 'Genera 1 Taco por Segundo por nivel.' },
@@ -44,10 +44,10 @@ const initialGameState = {
     unlockCost: 100000,
     upgrades: [
       { id: 'adobada-1', nombre: 'Piña', nivel: 0, costoBase: 30, costo: 30, efecto: 0.2 },
-      { id: 'adobada-2', nombre: 'Cilantro', nivel: 0, costoBase: 40, costo: 40, efecto: 0.2 },
-      { id: 'adobada-3', nombre: 'Cebolla', nivel: 0, costoBase: 40, costo: 40, efecto: 0.2 },
-      { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 80, costo: 80, efecto: 0.3 },
-      { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 150, costo: 150, efecto: 0.4 },
+      { id: 'adobada-2', nombre: 'Cilantro', nivel: 0, costoBase: 40, costo: 40, efecto: 0.3 },
+      { id: 'adobada-3', nombre: 'Cebolla', nivel: 0, costoBase: 40, costo: 40, efecto: 0.4 },
+      { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 80, costo: 80, efecto: 0.5 },
+      { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 150, costo: 150, efecto: 0.6 },
     ],
     ayudantes: []
   }
@@ -178,7 +178,7 @@ export default function App() {
               // Si está desbloqueado: renderiza la interfaz normal del juego.
               <>
                 {/*Desplegamos el guisado del taco y su ganancia por cada uno}*/}
-                <h2>{taco.nombre} ${calculateGananciaPorClick(taco.id)}</h2>
+                <h2>{taco.nombre} ${calculateGananciaPorClick(taco.id).toFixed(2)}</h2>
                 <ClickerButton
                   onVenderTaco={() => handleVenderTaco(taco.id)}
                   guisado={taco.nombre}

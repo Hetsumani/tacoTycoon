@@ -6,7 +6,7 @@ import React from 'react';
 function Header({ tacosVendidos, dinero, tps }) {
   return (
     <header className="App-header">
-      <h1>Tacos Tycoon</h1>
+      <h1>Taco Tycoon</h1>
       <div className="stats-container">
         <h2>Tacos Totales: {tacosVendidos.toFixed(0)}</h2>
         <h2>Dinero: ${dinero.toFixed(2)}</h2>
