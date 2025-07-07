@@ -1,25 +1,27 @@
 :root {
+  /* 1. Definimos nuestra nueva paleta de colores como variables */
+  --color-background: #401201; /* Marrón oscuro para el fondo */
+  --color-text: #F5EFE6;       /* Un blanco hueso cálido para el texto */
+  --color-surface: #592d1b;    /* Un marrón más claro para superficies/paneles */
+  --color-accent-lime: #ABBF15;
+  --color-accent-gold: #F2AE2E;
+  --color-accent-orange: #F27405;
+  --color-accent-red: #F24405;
+  --color-disabled: #260c01;  /* Un marrón muy oscuro para estados deshabilitados */
+
+  /* 2. Aplicamos las variables a los estilos base */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark; /* Forzamos el esquema oscuro con nuestra paleta */
+  color: var(--color-text);
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
 }
 
 body {
@@ -30,9 +32,9 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  /* Un toque de color para los encabezados */
+  color: var(--color-accent-gold);
 }
 
 button {
@@ -42,27 +44,19 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /* Usamos el color de superficie para los botones */
+  background-color: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  /* El borde dorado al pasar el ratón */
+  border-color: var(--color-accent-gold);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* Eliminamos la media query de light-theme ya que estamos forzando nuestra propia paleta oscura */

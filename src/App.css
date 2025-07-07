@@ -5,119 +5,60 @@
   text-align: center;
 }
 
-.upgrade-list {
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 8px;
+/* Usamos el color de superficie para las secciones de los tacos */
+.taco-type-section {
+  flex-basis: 48%;
+  border: 2px solid var(--color-accent-orange); /* Borde naranja para destacar */
+  border-radius: 10px;
+  padding: 15px;
+  background-color: var(--color-surface);
 }
 
 .upgrade {
-  display: flex;
-  flex-direction: column; /* Apila los hijos verticalmente */
-  gap: 12px; /* Espacio entre la info y la barra de progreso */
   padding: 12px;
-  border-bottom: 1px solid #555;
+  border-bottom: 1px solid var(--color-background); /* Borde con el color de fondo para separar */
 }
 
-.upgrade-info {
-  display: flex;
-  justify-content: space-between; /* Espacio entre texto y botón */
-  align-items: center;
-  width: 100%;
-}
+/* ... (otros estilos de layout como .upgrade-info, .game-container, etc., no necesitan cambios de color) ... */
 
-.upgrade-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Espacio entre el costo y el botón */
-}
-
-.game-container {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-}
-
-.clicker-section {
-  flex-basis: 30%;
-}
-
-.upgrades-section {
-  flex-basis: 70%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.game-container {
-  display: flex;
-  justify-content: space-around;
-  gap: 20px;
-  padding: 20px;
-}
-
-.taco-type-section {
-  flex-basis: 48%;
-  border: 2px solid #555;
-  border-radius: 10px;
-  padding: 15px;
-  background-color: #333;
-}
-
-.unlock-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: #ccc;
-}
-
+/* Botón de desbloqueo ahora usa el acento lima */
 .unlock-button {
   padding: 15px 30px;
   font-size: 1.2em;
   border-radius: 8px;
   border: none;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--color-accent-lime);
+  color: var(--color-background); /* Texto oscuro para buen contraste */
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .unlock-button:disabled {
-  background-color: #555;
+  background-color: var(--color-disabled);
+  color: #777;
   cursor: not-allowed;
 }
 
 .unlock-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #c4d934; /* Una versión un poco más brillante del lima */
 }
 
-.action-buttons-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-/* El contenedor exterior de la barra de progreso */
+/* El contenedor de la barra de progreso usa el color de fondo y deshabilitado */
 .progress-bar-container {
-  width: 100%; /* Ocupa todo el ancho de su contenedor padre */
-  background-color: #555; /* Un fondo oscuro para la parte "vacía" de la barra */
-  border-radius: 10px; /* Bordes redondeados para un look suave */
-  height: 14px; /* Una altura fija y delgada */
-  margin-top: 8px; /* Un poco de espacio para que no esté pegado al texto */
-  border: 1px solid #777; /* Un borde sutil para darle definición */
-  overflow: hidden; /* Muy importante: oculta cualquier parte de la barra de relleno que se salga de los bordes redondeados */
+  width: 100%;
+  background-color: var(--color-disabled);
+  border-radius: 10px;
+  height: 14px;
+  margin-top: 8px;
+  border: 1px solid var(--color-background);
+  overflow: hidden;
 }
 
-/* La barra interior que muestra el progreso actual */
+/* El relleno de la barra usa el gradiente con los colores de la paleta */
 .progress-bar-fill {
-  height: 100%; /* Siempre ocupa el 100% de la altura del contenedor */
-  background: linear-gradient(90deg, #ffd700, #ffb347); /* Un gradiente dorado que se ve genial */
-  border-radius: 10px; /* Asegura que las esquinas sean redondeadas */
-  
-  /* ¡El toque mágico! Anima el cambio de ancho suavemente */
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-orange));
+  border-radius: 10px;
   transition: width 0.3s ease-in-out; 
 }

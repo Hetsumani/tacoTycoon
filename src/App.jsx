@@ -8,6 +8,8 @@ import AyudanteList from "./components/AyudanteList";
 import Modal from "./components/Modal"; // <-- 1. IMPORTAMOS LA MODAL
 import "./App.css";
 
+import asadaImage from './assets/asada.webp';
+
 const initialGameState = {
   asada: {
     id: "asada",
@@ -16,6 +18,7 @@ const initialGameState = {
     tacosVendidos: 0,
     isUnlocked: true,
     unlockCost: 0,
+    imagen: asadaImage,
     upgrades: [
       {
         id: "asada-1",
@@ -425,6 +428,13 @@ export default function App() {
           <div key={taco.id} className="taco-type-section">
             {taco.isUnlocked ? (
               <>
+                {/* ===== PUNTO DE CAMBIO: IMAGEN DEL TACO ===== */}
+                <img
+                  src={taco.imagen}
+                  alt={taco.nombre}
+                  className="taco-image"
+                  width={100}
+                />
                 <h2>
                   {taco.nombre} ($
                   {calculateGananciaPorClick(taco.id).toFixed(2)})
@@ -432,9 +442,7 @@ export default function App() {
                 <ClickerButton
                   onVenderTaco={() => handleVenderTaco(taco.id)}
                   guisado={taco.nombre}
-                />
-
-                {/* ===== PUNTO DE CAMBIO CLAVE 1: BOTONES EN LUGAR DE LISTAS ===== */}
+                />                
                 <div className="action-buttons-container">
                   <button onClick={() => handleOpenModal(taco.id, "upgrades")}>
                     Ver Mejoras
@@ -463,9 +471,7 @@ export default function App() {
             )}
           </div>
         ))}
-      </main>
-
-      {/* ===== PUNTO DE CAMBIO CLAVE 2: RENDERIZADO DE LA MODAL ===== */}
+      </main>      
       <Modal
         isOpen={modalConfig.show}
         onClose={handleCloseModal}
