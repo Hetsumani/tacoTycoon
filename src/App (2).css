@@ -1,0 +1,64 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Usamos el color de superficie para las secciones de los tacos */
+.taco-type-section {
+  flex-basis: 48%;
+  border: 2px solid var(--color-accent-orange); /* Borde naranja para destacar */
+  border-radius: 10px;
+  padding: 15px;
+  background-color: var(--color-surface);
+}
+
+.upgrade {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-background); /* Borde con el color de fondo para separar */
+}
+
+/* ... (otros estilos de layout como .upgrade-info, .game-container, etc., no necesitan cambios de color) ... */
+
+/* Botón de desbloqueo ahora usa el acento lima */
+.unlock-button {
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--color-accent-lime);
+  color: var(--color-background); /* Texto oscuro para buen contraste */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.unlock-button:disabled {
+  background-color: var(--color-disabled);
+  color: #777;
+  cursor: not-allowed;
+}
+
+.unlock-button:hover:not(:disabled) {
+  background-color: #c4d934; /* Una versión un poco más brillante del lima */
+}
+
+/* El contenedor de la barra de progreso usa el color de fondo y deshabilitado */
+.progress-bar-container {
+  width: 100%;
+  background-color: var(--color-disabled);
+  border-radius: 10px;
+  height: 14px;
+  margin-top: 8px;
+  border: 1px solid var(--color-background);
+  overflow: hidden;
+}
+
+/* El relleno de la barra usa el gradiente con los colores de la paleta */
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-orange));
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out; 
+}

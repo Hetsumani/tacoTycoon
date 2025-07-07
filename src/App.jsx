@@ -472,29 +472,79 @@ export default function App() {
           </div>
         ))}
       </main>      
+      {/*
+        ==================================================================
+        RENDERIZADO DE LA MODAL
+        ==================================================================
+        Aquí es donde nuestro componente <Modal> reutilizable cobra vida.
+        Solo existe UNA instancia de la Modal en toda la aplicación, y su contenido
+        y visibilidad son controlados completamente por el estado (`modalConfig`).
+        Este es un patrón de diseño muy eficiente.
+      */}
       <Modal
+        // --- PROP: isOpen ---
+        // La visibilidad de la modal está directamente ligada al estado.
+        // Si `modalConfig.show` es `true`, la modal se renderiza; si es `false`, devuelve `null`.
+        // Esto es un ejemplo claro de una "UI declarativa" o "state-driven UI".
         isOpen={modalConfig.show}
+
+        // --- PROP: onClose ---
+        // Pasamos la función `handleCloseModal` como una prop. Esto permite que el componente hijo (`Modal`)
+        // pueda "comunicarse" con su padre (`App`) para pedirle que cambie el estado.
+        // Es la forma en que el botón de cierre o el clic en el fondo de la modal pueden funcionar.
         onClose={handleCloseModal}
+
+        // --- PROP: titulo ---
+        // El título se genera dinámicamente basándose en el estado `modalConfig`.
+        // Usamos un operador ternario para construir el string:
         titulo={
+          // 1. Primero, nos aseguramos de que `tacoId` y `type` no sean nulos para evitar errores.
           modalConfig.tacoId && modalConfig.type
+            // 2. Si tenemos datos, construimos el título.
             ? `${
+                // Usamos otro ternario para elegir entre "Mejoras" y "Ayudantes".
                 modalConfig.type === "upgrades" ? "Mejoras" : "Ayudantes"
-              } para Tacos de ${gameState[modalConfig.tacoId]?.nombre}`
+              } para Tacos de ${
+                // Accedemos al nombre del taco. El `?.` (optional chaining) es una medida de seguridad:
+                // si por alguna razón `gameState[modalConfig.tacoId]` fuera indefinido, no rompería la app.
+                gameState[modalConfig.tacoId]?.nombre
+              }`
+            // 3. Si no hay datos, el título es un string vacío.
             : ""
         }
       >
+        {/*
+          ==================================================================
+          CONTENIDO HIJO (CHILDREN) DE LA MODAL
+          ==================================================================
+          Todo lo que está aquí dentro se pasará a la prop `children` de la Modal.
+          Utilizamos "renderizado condicional" con el operador `&&` para decidir
+          QUÉ componente de lista mostrar.
+        */}
+
+        {/* --- Condición para mostrar la lista de Mejoras --- */}
+        {/* Esto se lee como: "SI el tipo es 'upgrades' Y SI tenemos un tacoId, ENTONCES renderiza <UpgradeList>" */}
         {modalConfig.type === "upgrades" && modalConfig.tacoId && (
           <UpgradeList
+            // Pasamos solo la lista de mejoras del taco seleccionado.
             upgrades={gameState[modalConfig.tacoId].upgrades}
+            // Creamos una función sobre la marcha para pasar los argumentos correctos
+            // a nuestro manejador de compras general.
             onComprarMejora={(itemId) =>
               handleComprar(modalConfig.tacoId, itemId, "upgrades")
             }
+            // Pasamos el dinero actual para que el componente hijo sepa si habilitar o no los botones.
             dinero={dinero}
           />
         )}
+
+        {/* --- Condición para mostrar la lista de Ayudantes --- */}
+        {/* Esto se lee como: "SI el tipo es 'ayudantes' Y SI tenemos un tacoId, ENTONCES renderiza <AyudanteList>" */}
         {modalConfig.type === "ayudantes" && modalConfig.tacoId && (
           <AyudanteList
+            // Pasamos solo la lista de ayudantes del taco seleccionado.
             ayudantes={gameState[modalConfig.tacoId].ayudantes}
+            // Hacemos lo mismo que con las mejoras, pero especificando el tipo "ayudantes".
             onComprarAyudante={(itemId) =>
               handleComprar(modalConfig.tacoId, itemId, "ayudantes")
             }
