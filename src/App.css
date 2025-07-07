@@ -14,10 +14,23 @@
 
 .upgrade {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* Apila los hijos verticalmente */
+  gap: 12px; /* Espacio entre la info y la barra de progreso */
+  padding: 12px;
+  border-bottom: 1px solid #555;
+}
+
+.upgrade-info {
+  display: flex;
+  justify-content: space-between; /* Espacio entre texto y botón */
   align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+  width: 100%;
+}
+
+.upgrade-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espacio entre el costo y el botón */
 }
 
 .game-container {
@@ -86,4 +99,25 @@
   display: flex;
   justify-content: center;
   gap: 15px;
+}
+
+/* El contenedor exterior de la barra de progreso */
+.progress-bar-container {
+  width: 100%; /* Ocupa todo el ancho de su contenedor padre */
+  background-color: #555; /* Un fondo oscuro para la parte "vacía" de la barra */
+  border-radius: 10px; /* Bordes redondeados para un look suave */
+  height: 14px; /* Una altura fija y delgada */
+  margin-top: 8px; /* Un poco de espacio para que no esté pegado al texto */
+  border: 1px solid #777; /* Un borde sutil para darle definición */
+  overflow: hidden; /* Muy importante: oculta cualquier parte de la barra de relleno que se salga de los bordes redondeados */
+}
+
+/* La barra interior que muestra el progreso actual */
+.progress-bar-fill {
+  height: 100%; /* Siempre ocupa el 100% de la altura del contenedor */
+  background: linear-gradient(90deg, #ffd700, #ffb347); /* Un gradiente dorado que se ve genial */
+  border-radius: 10px; /* Asegura que las esquinas sean redondeadas */
+  
+  /* ¡El toque mágico! Anima el cambio de ancho suavemente */
+  transition: width 0.3s ease-in-out; 
 }

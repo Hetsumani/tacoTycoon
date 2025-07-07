@@ -1,8 +1,6 @@
-// Este componente será casi idéntico a Upgrade.jsx, pero adaptado para los ayudantes.
+// src/components/Ayudante.jsx
+
 import React from "react";
-/**
- * Muestra un único ayudante con su nombre, nivel, costo y efecto.
- */
 
 function Ayudante({
   nombre,
@@ -12,18 +10,43 @@ function Ayudante({
   onComprar,
   estaDeshabilitado,
 }) {
+  // 1. Definimos el nivel máximo como una constante para claridad.
+  const MAX_NIVEL = 20;
+
+  // 2. Calculamos el progreso como un porcentaje.
+  const progreso = (nivel / MAX_NIVEL) * 100;
+
+  // 3. Ocultamos el botón si ya se alcanzó el nivel máximo.
+  const haAlcanzadoMaxNivel = nivel >= MAX_NIVEL;
+
   return (
+    // Ahora .upgrade es un contenedor de columna (flex-direction: column)
     <div className="upgrade">
-      {" "}
-      {/*Reutilizamos la clase CSS*/}
-      <div>
-        <strong>
-          {nombre} (Nivel {nivel})
-        </strong>
-        <p style={{ margin: "4px 0", fontSize: "0.9em" }}>{descripcion}</p>
+      {/* Este div agrupa toda la información superior */}
+      <div className="upgrade-info">
+        <div>
+          <strong>
+            {nombre} {haAlcanzadoMaxNivel ? "(Nivel MÁX)" : `(Nivel ${nivel})`}
+          </strong>
+          <p style={{ margin: "4px 0", fontSize: "0.9em" }}>{descripcion}</p>
+        </div>
+        <div className="upgrade-actions">
+          <span>Costo: ${!haAlcanzadoMaxNivel ? costo : "---"}</span>
+          {!haAlcanzadoMaxNivel && (
+            <button onClick={onComprar} disabled={estaDeshabilitado}>
+              Contratar
+            </button>
+          )}
+        </div>
       </div>
-      <span>Costo: ${costo}</span>
-      <button onClick={onComprar} disabled={estaDeshabilitado}>Contratar</button>
+
+      {/* La barra de progreso va debajo */}
+      <div className="progress-bar-container">
+        <div
+          className="progress-bar-fill"
+          style={{ width: `${progreso}%` }}
+        ></div>
+      </div>
     </div>
   );
 }

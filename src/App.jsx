@@ -373,6 +373,12 @@ export default function App() {
     const taco = gameState[tacoId];
     const items = taco[itemType];
     const item = items.find((i) => i.id === itemId);
+
+    // Si es un ayudante y ya alcanzó el nivel máximo, no hacer nada.
+    if (itemType === "ayudantes" && item.nivel >= 20) {
+      return;
+    }
+
     if (dinero >= item.costo) {
       setDinero(dinero - item.costo);
       const nuevosItems = items.map((i) =>
