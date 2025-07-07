@@ -43,62 +43,19 @@ const initialGameState = {
     isUnlocked: false,
     unlockCost: 100000,
     upgrades: [
-      { id: 'adobada-1', nombre: 'Piña', nivel: 0, costoBase: 500, costo: 500, efecto: 0.2 },
-      { id: 'adobada-2', nombre: 'Cilantro', nivel: 0, costoBase: 3000, costo: 3000, efecto: 0.3 },
-      { id: 'adobada-3', nombre: 'Cebolla', nivel: 0, costoBase: 7500, costo: 7500, efecto: 0.4 },
-      { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 15000, costo: 15000, efecto: 0.5 },
-      { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 75000, costo: 75000, efecto: 0.6 },
+      { id: 'adobada-1', nombre: 'Piña', nivel: 0, costoBase: 30, costo: 30, efecto: 0.2 },
+      { id: 'adobada-2', nombre: 'Cilantro', nivel: 0, costoBase: 40, costo: 40, efecto: 0.3 },
+      { id: 'adobada-3', nombre: 'Cebolla', nivel: 0, costoBase: 40, costo: 40, efecto: 0.4 },
+      { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 80, costo: 80, efecto: 0.5 },
+      { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 150, costo: 150, efecto: 0.6 },
     ],
-    ayudantes: [
-      { id: 'adobada-ayudante-1', nombre: 'El Trompo', nivel: 0, costoBase: 2500, costo: 2500, descripcion: 'Genera 1.5 Tacos por Segundo por nivel.' },
-      { id: 'adobada-ayudante-2', nombre: 'Don Adobo', nivel: 0, costoBase: 15000, costo: 15000, descripcion: 'Triplica el TPS de adobada por cada nivel.' },
-    ]
-  },
-
-    tripa: {
-        id: 'tripa',
-        nombre: 'Tripa',
-        precioBase: 10,
-        tacosVendidos: 0,
-        isUnlocked: false,
-        unlockCost: 500000,
-        upgrades: [
-            { id: 'tripa-1', nombre: 'Corte Dorado', nivel: 0, costoBase: 1000, costo: 1000, efecto: 0.25 },
-            { id: 'tripa-2', nombre: 'Cebolla Morada', nivel: 0, costoBase: 5000, costo: 5000, efecto: 0.35 },
-            { id: 'tripa-3', nombre: 'Cilantro Fresco', nivel: 0, costoBase: 12000, costo: 12000, efecto: 0.45 },
-            { id: 'tripa-4', nombre: 'Salsa Verde', nivel: 0, costoBase: 25000, costo: 25000, efecto: 0.55 },
-            { id: 'tripa-5', nombre: 'Tortilla Artesanal', nivel: 0, costoBase: 100000, costo: 100000, efecto: 0.75 },
-        ],
-        ayudantes: [
-            { id: 'tripa-ayudante-1', nombre: 'Don Pepe', nivel: 0, costoBase: 5000, costo: 5000, descripcion: 'Genera 2 Tacos por Segundo por nivel.' },
-            { id: 'tripa-ayudante-2', nombre: 'Doña Pepita', nivel: 0, costoBase: 25000, costo: 25000, descripcion: 'Cuadruplica el TPS de tripa por cada nivel.' },
-        ]
-    },
-
-    lengua: {
-    id: 'lengua',
-    nombre: 'Lengua',
-    precioBase: 15,
-    tacosVendidos: 0,
-    isUnlocked: false,
-    unlockCost: 2000000,
-    upgrades: [
-        { id: 'lengua-1', nombre: 'Cebolla Blanca', nivel: 0, costoBase: 2000, costo: 2000, efecto: 0.3 },
-        { id: 'lengua-2', nombre: 'Cilantro Premium', nivel: 0, costoBase: 8000, costo: 8000, efecto: 0.4 },
-        { id: 'lengua-3', nombre: 'Salsa Roja', nivel: 0, costoBase: 20000, costo: 20000, efecto: 0.5 },
-        { id: 'lengua-4', nombre: 'Guacamole Especial', nivel: 0, costoBase: 50000, costo: 50000, efecto: 0.6 },
-        { id: 'lengua-5', nombre: 'Tortilla de Maíz Azul', nivel: 0, costoBase: 200000, costo: 200000, efecto: 0.8 },
-    ],
-    ayudantes: [
-        { id: 'lengua-ayudante-1', nombre: 'Don Toño', nivel: 0, costoBase: 10000, costo: 10000, descripcion: 'Genera 3 Tacos por Segundo por nivel.' },
-        { id: 'lengua-ayudante-2', nombre: 'Doña Anita', nivel: 0, costoBase: 50000, costo: 50000, descripcion: 'Quintuplica el TPS de lengua por cada nivel.' },
-    ]
-    }
+    ayudantes: []
+  }
 };
 
 export default function App() {
   // --- ESTADO ---
-  const [dinero, setDinero] = useState(20000000);
+  const [dinero, setDinero] = useState(0);
   // ETAPA 7: Se unifican los estados relacionados con los tacos en un solo objeto `gameState`.
   const [gameState, setGameState] = useState(initialGameState);
 
@@ -113,7 +70,7 @@ export default function App() {
     const bonusPorMejoras = taco.upgrades.reduce((total, mejora) => total + (mejora.nivel * mejora.efecto), 0);
     return taco.precioBase * (multiplicadorBase + bonusPorMejoras);
   };
-
+  
   // ETAPA 7: El TPS total ahora lee desde la nueva estructura de estado anidada.
   const totalTps = useMemo(() => {
     const tpsAsada = (() => {
@@ -153,7 +110,7 @@ export default function App() {
   }, [totalTps, gameState]);
 
   // --- MANEJADORES DE EVENTOS ---
-
+  
   // ETAPA 7: El manejador ahora recibe `tacoId` para saber qué taco incrementar.
   const handleVenderTaco = (tacoId) => {
     const ganancia = calculateGananciaPorClick(tacoId);
