@@ -7,19 +7,13 @@ import UpgradeList from './components/upgradeList';
 import AyudanteList from './components/AyudanteList';
 import './App.css';
 
-// --- DATOS INICIALES ---
-
-// ETAPA 7: Se reestructura toda la data inicial en un solo objeto `initialGameState`.
-// Esto nos permite manejar múltiples tipos de tacos de forma escalable.
-// Cada clave del objeto (ej. 'asada') representa un tipo de taco.
 const initialGameState = {
   asada: {
     id: 'asada',
     nombre: 'Asada',
     precioBase: 5,
     tacosVendidos: 0,
-    // ETAPA 7 EXTRA: Se añade la propiedad `isUnlocked` para controlar la visibilidad y funcionalidad.
-    isUnlocked: true, // Asada empieza desbloqueado.
+    isUnlocked: true,
     unlockCost: 0,
     upgrades: [
       { id: 'asada-1', nombre: 'Cebolla', nivel: 0, costoBase: 250, costo: 250, efecto: 0.15 },
@@ -33,13 +27,11 @@ const initialGameState = {
       { id: 'asada-ayudante-2', nombre: 'Doña Concha', nivel: 0, costoBase: 10000, costo: 10000, descripcion: 'Duplica el TPS total por cada nivel.' },
     ]
   },
-  // ETAPA 7: Se añade el objeto completo para el nuevo tipo de taco: Adobada.
   adobada: {
     id: 'adobada',
     nombre: 'Adobada',
     precioBase: 7,
     tacosVendidos: 0,
-    // ETAPA 7 EXTRA: Adobada empieza bloqueado y con un costo de desbloqueo.
     isUnlocked: false,
     unlockCost: 100000,
     upgrades: [
@@ -49,73 +41,114 @@ const initialGameState = {
       { id: 'adobada-4', nombre: 'Salsa', nivel: 0, costoBase: 80, costo: 80, efecto: 0.5 },
       { id: 'adobada-5', nombre: 'Guacamole', nivel: 0, costoBase: 150, costo: 150, efecto: 0.6 },
     ],
-    ayudantes: []
+    ayudantes: [
+      { id: 'adobada-ayudante-1', nombre: 'El Don Trompa', nivel: 0, costoBase: 1000, costo: 1000, descripcion: 'Genera 1 Taco por Segundo por nivel.' },
+      { id: 'adobada-ayudante-2', nombre: 'El Trompito', nivel: 0, costoBase: 7500, costo: 7500, descripcion: 'Duplica el TPS total por cada nivel.' },
+    ]
+  },
+  cabeza: {
+    id: 'cabeza',
+    nombre: 'Cabeza',
+    precioBase: 6,
+    tacosVendidos: 0,
+    isUnlocked: false,
+    unlockCost: 150000,
+    upgrades: [
+      { id: 'cabeza-1', nombre: 'Cachete Extra', nivel: 0, costoBase: 500, costo: 500, efecto: 0.2 },
+      { id: 'cabeza-2', nombre: 'Lengua Premium', nivel: 0, costoBase: 1000, costo: 1000, efecto: 0.3 },
+      { id: 'cabeza-3', nombre: 'Salsa Verde', nivel: 0, costoBase: 2000, costo: 2000, efecto: 0.4 },
+      { id: 'cabeza-4', nombre: 'Tortilla de Maíz Azul', nivel: 0, costoBase: 3000, costo: 3000, efecto: 0.5 },
+      { id: 'cabeza-5', nombre: 'Cebolla y Cilantro', nivel: 0, costoBase: 5000, costo: 5000, efecto: 0.6 },
+    ],
+    ayudantes: [
+      { id: 'cabeza-ayudante-1', nombre: 'El Aquiles Baeza', nivel: 0, costoBase: 1200, costo: 1200, descripcion: 'Genera 1 Taco por Segundo por nivel.' },
+      { id: 'cabeza-ayudante-2', nombre: 'Doña Dolores Delano', nivel: 0, costoBase: 9500, costo: 9500, descripcion: 'Duplica el TPS total por cada nivel.' },
+    ]
+  },
+  quesabirria: {
+    id: 'quesabirria',
+    nombre: 'Quesabirria',
+    precioBase: 10,
+    tacosVendidos: 0,
+    isUnlocked: false,
+    unlockCost: 200000,
+    upgrades: [
+      { id: 'quesabirria-1', nombre: 'Más Queso', nivel: 0, costoBase: 1000, costo: 1000, efecto: 0.25 },
+      { id: 'quesabirria-2', nombre: 'Consomé', nivel: 0, costoBase: 3000, costo: 3000, efecto: 0.35 },
+      { id: 'quesabirria-3', nombre: 'Carne Extra', nivel: 0, costoBase: 8000, costo: 8000, efecto: 0.5 },
+      { id: 'quesabirria-4', nombre: 'Tortilla Crujiente Bañada en Aceite de la Birria🥵', nivel: 0, costoBase: 16000, costo: 16000, efecto: 0.65 },
+      { id: 'quesabirria-5', nombre: 'Con Gordito', nivel: 0, costoBase: 25000, costo: 25000, efecto: 0.8 },
+    ],
+    ayudantes: [
+      { id: 'quesabirria-ayudante-1', nombre: 'El Aitor Tilla', nivel: 0, costoBase: 2000, costo: 2000, descripcion: 'Genera 1 Taco por Segundo por nivel.' },
+      { id: 'quesabirria-ayudante-2', nombre: 'Taquero Elton Tito', nivel: 0, costoBase: 12000, costo: 12000, descripcion: 'Duplica el TPS total por cada nivel.' },
+    ]
   }
 };
 
 export default function App() {
-  // --- ESTADO ---
-  const [dinero, setDinero] = useState(0);
-  // ETAPA 7: Se unifican los estados relacionados con los tacos en un solo objeto `gameState`.
+  const [dinero, setDinero] = useState(10000000000);
   const [gameState, setGameState] = useState(initialGameState);
 
-  // --- CÁLCULOS DERIVADOS ---
-
-  // ETAPA 7: `gananciaPorClick` se convierte en una función que toma el ID del taco.
-  // Esto es necesario porque ahora cada tipo de taco tiene su propia ganancia.
   const calculateGananciaPorClick = (tacoId) => {
     const taco = gameState[tacoId];
     if (!taco) return 0;
-    const multiplicadorBase = 1;
     const bonusPorMejoras = taco.upgrades.reduce((total, mejora) => total + (mejora.nivel * mejora.efecto), 0);
-    return taco.precioBase * (multiplicadorBase + bonusPorMejoras);
+    return taco.precioBase * (1 + bonusPorMejoras);
   };
-  
-  // ETAPA 7: El TPS total ahora lee desde la nueva estructura de estado anidada.
+
   const totalTps = useMemo(() => {
-    const tpsAsada = (() => {
-      // ETAPA 7 EXTRA: Se añade una comprobación para no calcular el TPS de un taco bloqueado.
-      if (!gameState.asada.isUnlocked) return 0;
-      const ayudantes = gameState.asada.ayudantes;
-      const tpsBase = (ayudantes.find(a => a.id === 'asada-ayudante-1')?.nivel || 0) * 1;
-      const multiplicadorNivel = ayudantes.find(a => a.id === 'asada-ayudante-2')?.nivel || 0;
-      return tpsBase * Math.pow(2, multiplicadorNivel);
-    })();
-    return tpsAsada;
+    return Object.values(gameState).reduce((total, taco) => {
+      if (!taco.isUnlocked) return total;
+      const ayudante1 = taco.ayudantes[0];
+      const ayudante2 = taco.ayudantes[1];
+      const tpsBase = (ayudante1?.nivel || 0);
+      const multiplicador = Math.pow(2, ayudante2?.nivel || 0);
+      return total + tpsBase * multiplicador;
+    }, 0);
   }, [gameState]);
 
-  // ETAPA 7: Se añade un cálculo para el total de tacos vendidos de todos los tipos.
   const totalTacos = useMemo(() => {
     return Object.values(gameState).reduce((total, taco) => total + taco.tacosVendidos, 0);
   }, [gameState]);
 
-
-  // --- BUCLE DEL JUEGO ---
   useEffect(() => {
     if (totalTps === 0) return;
     const intervalId = setInterval(() => {
-      const gananciaPorSegundo = totalTps * calculateGananciaPorClick('asada');
-      // ETAPA 7: La actualización de estado ahora debe modificar el objeto anidado correctamente.
-      setGameState(prev => ({
-        ...prev,
-        asada: {
-          ...prev.asada,
-          tacosVendidos: prev.asada.tacosVendidos + (totalTps / 10)
+      let gananciaTotal = 0;
+      const nuevosTacosVendidos = {};
+
+      Object.values(gameState).forEach(taco => {
+        if (!taco.isUnlocked) return;
+        const ayudante1 = taco.ayudantes[0];
+        const ayudante2 = taco.ayudantes[1];
+        const tpsBase = (ayudante1?.nivel || 0);
+        const multiplicador = Math.pow(2, ayudante2?.nivel || 0);
+        const tps = tpsBase * multiplicador;
+        const ganancia = tps * calculateGananciaPorClick(taco.id) / 10;
+        gananciaTotal += ganancia;
+        nuevosTacosVendidos[taco.id] = (taco.tacosVendidos || 0) + (tps / 10);
+      });
+
+      setGameState(prev => {
+        const nuevoEstado = { ...prev };
+        for (const [id, nuevosTacos] of Object.entries(nuevosTacosVendidos)) {
+          nuevoEstado[id] = {
+            ...nuevoEstado[id],
+            tacosVendidos: nuevosTacos
+          };
         }
-      }));
-      setDinero(prevDinero => prevDinero + (gananciaPorSegundo / 10));
+        return nuevoEstado;
+      });
+
+      setDinero(prev => prev + gananciaTotal);
     }, 100);
     return () => clearInterval(intervalId);
-    // ETAPA 7: `gameState` se convierte en una dependencia para que el bucle se actualice si algo cambia.
   }, [totalTps, gameState]);
 
-  // --- MANEJADORES DE EVENTOS ---
-  
-  // ETAPA 7: El manejador ahora recibe `tacoId` para saber qué taco incrementar.
   const handleVenderTaco = (tacoId) => {
     const ganancia = calculateGananciaPorClick(tacoId);
-    setDinero(prevDinero => prevDinero + ganancia);
-    // ETAPA 7: La actualización del estado es más compleja para modificar una propiedad anidada de forma inmutable.
+    setDinero(prev => prev + ganancia);
     setGameState(prev => ({
       ...prev,
       [tacoId]: {
@@ -125,64 +158,42 @@ export default function App() {
     }));
   };
 
-  // ETAPA 7: El manejador de compra ahora es más genérico, aceptando `tacoId` y `itemType` ('upgrades' o 'ayudantes').
   const handleComprar = (tacoId, itemId, itemType) => {
     const taco = gameState[tacoId];
     const items = taco[itemType];
     const item = items.find(i => i.id === itemId);
-
     if (dinero >= item.costo) {
       setDinero(dinero - item.costo);
-      const nuevosItems = items.map(i => {
-        if (i.id === itemId) {
-          const nuevoNivel = i.nivel + 1;
-          return { ...i, nivel: nuevoNivel, costo: Math.floor(i.costoBase * Math.pow(1.15, nuevoNivel)) };
-        }
-        return i;
-      });
-      // ETAPA 7: La actualización del estado busca el taco correcto y el tipo de item correcto para actualizar.
+      const nuevosItems = items.map(i =>
+        i.id === itemId
+          ? { ...i, nivel: i.nivel + 1, costo: Math.floor(i.costoBase * Math.pow(1.15, i.nivel + 1)) }
+          : i
+      );
       setGameState(prev => ({ ...prev, [tacoId]: { ...prev[tacoId], [itemType]: nuevosItems } }));
     }
   };
 
-  // ETAPA 7 EXTRA: Se añade una nueva función para manejar la lógica de desbloqueo.
   const handleUnlockTaco = (tacoId) => {
     const taco = gameState[tacoId];
     if (dinero >= taco.unlockCost) {
-        setDinero(prevDinero => prevDinero - taco.unlockCost);
-        // Actualiza el estado para poner la propiedad `isUnlocked` del taco en `true`.
-        setGameState(prev => ({
-            ...prev,
-            [tacoId]: { ...prev[tacoId], isUnlocked: true }
-        }));
+      setDinero(prev => prev - taco.unlockCost);
+      setGameState(prev => ({
+        ...prev,
+        [tacoId]: { ...prev[tacoId], isUnlocked: true }
+      }));
     }
   };
 
-
-  // --- RENDERIZADO ---
   return (
     <div className="App">
-      <Header
-        tacosVendidos={totalTacos}
-        dinero={dinero}
-        tps={totalTps}
-      />
+      <Header tacosVendidos={totalTacos} dinero={dinero} tps={totalTps} />
       <main className='game-container'>
-        {/* ETAPA 7: Se mapea el objeto `gameState` para renderizar una sección por cada tipo de taco.
-            Esto hace que la UI sea dinámica y se adapte a los datos. */}
         {Object.values(gameState).map(taco => (
           <div key={taco.id} className="taco-type-section">
-            {/* ETAPA 7 EXTRA: Se añade renderizado condicional. Muestra una cosa si el taco
-                está desbloqueado, y otra (el botón de desbloqueo) si no lo está. */}
             {taco.isUnlocked ? (
-              // Si está desbloqueado: renderiza la interfaz normal del juego.
               <>
-                {/*Desplegamos el guisado del taco y su ganancia por cada uno}*/}
                 <h2>{taco.nombre} ${calculateGananciaPorClick(taco.id).toFixed(2)}</h2>
-                <ClickerButton
-                  onVenderTaco={() => handleVenderTaco(taco.id)}
-                  guisado={taco.nombre}
-                />
+                <ClickerButton onVenderTaco={() => handleVenderTaco(taco.id)} guisado={taco.nombre} />
                 <UpgradeList
                   titulo={`Mejoras de ${taco.nombre}`}
                   upgrades={taco.upgrades}
@@ -199,7 +210,6 @@ export default function App() {
                 )}
               </>
             ) : (
-              // Si NO está desbloqueado: renderiza la sección de desbloqueo.
               <div className="unlock-section">
                 <h2>Desbloquear Taquería de {taco.nombre}</h2>
                 <p>Costo: ${taco.unlockCost.toLocaleString()}</p>
