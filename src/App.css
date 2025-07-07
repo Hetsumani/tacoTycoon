@@ -80,3 +80,10 @@
 .unlock-button:hover:not(:disabled) {
   background-color: #45a049;
 }
+
+.action-buttons-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
